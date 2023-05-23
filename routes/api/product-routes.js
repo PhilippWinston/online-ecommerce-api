@@ -98,33 +98,33 @@ router.post('/', async (req, res) => {
 // update product
 router.put('/:id', async (req, res) => {
   const productId = req.params.id;
-  const { product_name, price, stock, tagIds } = req.body;
+  const { product_name, price, stock, tags } = req.body;
 
   try {
     // Update product data
-    const updatedProduct = await Product.update(
+    await Product.update(
       { product_name, price, stock },
       { where: { id: productId } }
     );
 
-    if (tagIds && tagIds.length) {
+    if (tags && tags.length) {
       const productTags = await ProductTag.findAll({ where: { product_id: productId } });
 
       // Create filtered list of new tag_ids
       const productTagIds = productTags.map(({ tag_id }) => tag_id);
-      const newProductTags = tagIds
-        .filter((tag_id) => !productTagIds.includes(tag_id))
-        .map((tag_id) => {
+      const newProductTags = tags
+        .filter((tag) => !productTagIds.includes(tag.id))
+        .map((tag) => {
           return {
             product_id: productId,
-            tag_id,
+            tag_id: tag.id,
           };
         });
 
-        // Figure out which ones to remove
-        const productTagsToRemove = productTags
-          .filter(({ tag_id }) => !tagIds.includes(tag_id))
-          .map(({ id }) => id);
+      // Figure out which ones to remove
+      const productTagsToRemove = productTags
+        .filter(({ tag_id }) => !tags.some((tag) => tag.id === tag_id))
+        .map(({ id }) => id);
 
       await Promise.all([
         ProductTag.destroy({ where: { id: productTagsToRemove } }),
