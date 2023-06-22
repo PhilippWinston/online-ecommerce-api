@@ -73,6 +73,6 @@ No license was used for this project.
 
   Please contact me using the following links:
   [GitHub](https://github.com/philippwinston)
-  [Email: philippwinston@gmail.com](mailto:philippwinston@gmail.com)
+  [Email:](mailto:philippwinston@gmail.com)
   
 ---
